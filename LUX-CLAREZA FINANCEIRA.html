@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>LUX - CFO IA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ========== TEMA FREE (CORES ORIGINAIS) ========== */
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: #eef2ff;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+
+        body .card {
+            background: #0f172a;
+            border-radius: 24px;
+            border: 1px solid #1e2a4a;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        body .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 12px;
+            color: #eef2ff;
+        }
+
+        body .saldo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #c084fc;
+        }
+
+        body .insight-box {
+            background: #0f172a;
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 20px;
+            border: 1px solid #334155;
+            font-size: 0.9rem;
+            color: #eef2ff;
+        }
+
+        body button:not(.logout-btn) {
+            background: #3b4f8a;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        body .upgrade-btn {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            color: #1a1a2e;
+        }
+
+        body .user-info {
+            background: #111827;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        body .logout-btn {
+            background: #dc2626;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        body .title h1 {
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        body .header {
+            border-bottom: 1px solid #1f2a44;
+        }
+
+        body input, body select {
+            background: #1a2340;
+            border: 1px solid #2d3a66;
+            color: white;
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+        }
+
+        body label {
+            color: #8da3e0;
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        body .trans-item {
+            background: #0b1120;
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            border-left: 4px solid;
+        }
+
+        body .trans-item.receita { border-left-color: #10b981; }
+        body .trans-item.despesa { border-left-color: #ef4444; }
+        body .trans-item.investimento { border-left-color: #f59e0b; }
+
+        body .chat-ia {
+            background: #0b1120;
+            margin-top: 20px;
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        body .user-msg {
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.1);
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        body .ia-msg {
+            color: #c084fc;
+            background: rgba(192, 132, 252, 0.1);
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        body .metric-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        body .metric-value {
+            color: #fbbf24;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        /* ========== TEMA PREMIUM LUXUOSO ========== */
+        body.premium {
+            background: #0D0D0D !important;
+        }
+
+        body.premium .card {
+            background: #1C1C1C !important;
+            border: 1px solid rgba(197, 160, 89, 0.2) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        body.premium .card:hover {
+            border-color: rgba(197, 160, 89, 0.5) !important;
+            transform: translateY(-2px);
+        }
+
+        body.premium .card h2 {
+            border-left: 3px solid #C5A059 !important;
+            color: #F2F2F2 !important;
+        }
+
+        body.premium .saldo {
+            color: #C5A059 !important;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        body.premium .insight-box {
+            background: rgba(197, 160, 89, 0.1) !important;
+            border: 1px solid rgba(197, 160, 89, 0.3) !important;
+            color: #F2F2F2 !important;
+        }
+
+        body.premium button:not(.logout-btn) {
+            background: linear-gradient(135deg, #C5A059, #a8883a) !important;
+            color: #0D0D0D !important;
+            font-weight: bold !important;
+            letter-spacing: 0.5px;
+        }
+
+        body.premium .upgrade-btn {
+            background: linear-gradient(135deg, #C5A059, #a8883a) !important;
+            color: #0D0D0D !important;
+        }
+
+        body.premium .logout-btn {
+            background: #2c2c2c !important;
+            border: 1px solid #C5A059 !important;
+            color: #C5A059 !important;
+        }
+
+        body.premium .user-info {
+            background: #1C1C1C !important;
+            border: 1px solid rgba(197, 160, 89, 0.3) !important;
+        }
+
+        body.premium .premium-badge {
+            background: linear-gradient(135deg, #C5A059, #a8883a) !important;
+            color: #0D0D0D !important;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+
+        body.premium .trans-item {
+            background: #1C1C1C !important;
+            border-left: 4px solid #C5A059 !important;
+        }
+
+        body.premium .trans-item.receita { border-left-color: #C5A059 !important; }
+        body.premium .trans-item.despesa { border-left-color: #C5A059 !important; opacity: 0.8; }
+        body.premium .trans-item.investimento { border-left-color: #C5A059 !important; }
+
+        body.premium .chat-ia {
+            background: #1C1C1C !important;
+            border: 1px solid rgba(197, 160, 89, 0.3) !important;
+        }
+
+        body.premium .user-msg {
+            background: rgba(197, 160, 89, 0.15) !important;
+            color: #C5A059 !important;
+        }
+
+        body.premium .ia-msg {
+            background: rgba(255, 255, 255, 0.05) !important;
+            color: #F2F2F2 !important;
+        }
+
+        body.premium .ia-msg strong {
+            color: #C5A059 !important;
+        }
+
+        body.premium input, 
+        body.premium select {
+            background: #0D0D0D !important;
+            border: 1px solid #2c2c2c !important;
+            color: #F2F2F2 !important;
+        }
+
+        body.premium input:focus, 
+        body.premium select:focus {
+            border-color: #C5A059 !important;
+            outline: none;
+        }
+
+        body.premium label {
+            color: #C5A059 !important;
+        }
+
+        body.premium .title h1 {
+            background: linear-gradient(135deg, #C5A059, #e6c27a) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            color: transparent !important;
+        }
+
+        body.premium .header {
+            border-bottom: 1px solid rgba(197, 160, 89, 0.3) !important;
+        }
+
+        body.premium .metric-card {
+            background: #0D0D0D !important;
+            border: 1px solid rgba(197, 160, 89, 0.3) !important;
+        }
+
+        body.premium .metric-value {
+            color: #C5A059 !important;
+        }
+
+        body.premium .chart-container canvas {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.02); }
+        }
+
+        /* Telas de Login e Cadastro */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .auth-card {
+            background: linear-gradient(135deg, #0f172a, #1a2340);
+            border-radius: 32px;
+            padding: 32px 24px;
+            max-width: 480px;
+            width: 100%;
+            border: 1px solid #2d3a66;
+        }
+
+        body.premium .auth-card {
+            background: #1C1C1C !important;
+            border: 1px solid #C5A059 !important;
+        }
+
+        body.premium .auth-card h1 {
+            background: linear-gradient(135deg, #C5A059, #e6c27a) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            color: transparent !important;
+        }
+
+        .auth-card h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #c084fc, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .auth-card p {
+            color: #8b9bcf;
+            margin-bottom: 28px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .switch-auth a {
+            color: #c084fc;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        body.premium .switch-auth a {
+            color: #C5A059;
+        }
+
+        .switch-auth a:hover {
+            text-decoration: underline;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            font-size: 1rem;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .error-msg {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 16px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .success-msg {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 16px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .alert-id {
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            color: #1a1a2e;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            text-align: center;
+            font-weight: bold;
+            animation: pulse 1s ease-in-out;
+        }
+
+        body.premium .alert-id {
+            background: linear-gradient(135deg, #C5A059, #a8883a);
+            color: #0D0D0D;
+        }
+
+        /* Main App */
+        .main-container {
+            display: none;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+        }
+
+        .user-info {
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .profile-btn {
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+        }
+
+        body .profile-btn {
+            color: #c084fc;
+        }
+
+        body.premium .profile-btn {
+            color: #C5A059;
+        }
+
+        .title h1 {
+            font-size: 1.4rem;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .transaction-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+
+        .chat-messages {
+            max-height: 280px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+        }
+
+        .chat-input-area button {
+            width: auto;
+            padding: 12px 16px;
+        }
+
+        .api-status {
+            font-size: 0.7rem;
+            padding: 8px;
+            border-radius: 12px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .api-online {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        .chart-container {
+            height: 250px;
+            margin-top: 16px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #C5A059;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 16px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+
+        body .toast-notification {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        body.premium .toast-notification {
+            background: linear-gradient(135deg, #C5A059, #a8883a);
+            color: #0D0D0D;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Modal Perfil */
+        .modal-perfil {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-perfil-content {
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        body .modal-perfil-content {
+            background: #0f172a;
+            border: 1px solid #3b82f6;
+        }
+
+        body.premium .modal-perfil-content {
+            background: #1C1C1C;
+            border: 1px solid #C5A059;
+        }
+
+        .modal-perfil-content h2 {
+            margin-bottom: 20px;
+        }
+
+        body .modal-perfil-content h2 {
+            color: #c084fc;
+        }
+
+        body.premium .modal-perfil-content h2 {
+            color: #C5A059;
+        }
+
+        .perfil-info {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .perfil-info p {
+            margin: 12px 0;
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        body .perfil-info p {
+            background: #0b1120;
+            border: 1px solid #1e2a4a;
+        }
+
+        body.premium .perfil-info p {
+            background: #0D0D0D;
+            border: 1px solid rgba(197, 160, 89, 0.3);
+        }
+
+        .perfil-info strong {
+            color: #C5A059;
+        }
+
+        .close-modal {
+            margin-top: 16px;
+        }
+
+        /* Modal PIX */
+        .modal-pix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-pix-content {
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        body .modal-pix-content {
+            background: #0f172a;
+            border: 1px solid #3b82f6;
+        }
+
+        body.premium .modal-pix-content {
+            background: #1C1C1C;
+            border: 1px solid #C5A059;
+        }
+
+        .modal-pix-content h2 {
+            margin-bottom: 16px;
+        }
+
+        body .modal-pix-content h2 {
+            color: #c084fc;
+        }
+
+        body.premium .modal-pix-content h2 {
+            color: #C5A059;
+        }
+
+        .pix-valor {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        body .pix-valor {
+            color: #c084fc;
+        }
+
+        body.premium .pix-valor {
+            color: #C5A059;
+        }
+
+        .pix-chave {
+            padding: 16px;
+            border-radius: 16px;
+            margin: 16px 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        body .pix-chave {
+            background: #0b1120;
+            border: 1px dashed #3b82f6;
+        }
+
+        body.premium .pix-chave {
+            background: #0D0D0D;
+            border: 1px dashed #C5A059;
+        }
+
+        .btn-copy {
+            padding: 12px;
+            border-radius: 40px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        body .btn-copy {
+            background: #3b4f8a;
+            color: white;
+        }
+
+        body.premium .btn-copy {
+            background: #C5A059;
+            color: #0D0D0D;
+        }
+
+        .btn-confirmar {
+            margin-top: 16px;
+        }
+
+        body .btn-confirmar {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        body.premium .btn-confirmar {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-fechar {
+            margin-top: 12px;
+        }
+
+        body .btn-fechar {
+            background: #2d3a5e;
+            color: white;
+        }
+
+        body.premium .btn-fechar {
+            background: #2c2c2c;
+            color: #F2F2F2;
+        }
+
+        .status-pendente {
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 16px;
+            font-size: 0.85rem;
+        }
+
+        body .status-pendente {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+        }
+
+        body.premium .status-pendente {
+            background: rgba(197, 160, 89, 0.2);
+            border: 1px solid #C5A059;
+        }
+    </style>
+</head>
+<body>
+
+<!-- TELA DE CADASTRO -->
+<div id="cadastroScreen" class="auth-overlay">
+    <div class="auth-card">
+        <h1>⚡ LUX</h1>
+        <p>CFO IA de Alto Nível • Premium R$ 5,00 (Vitalício)</p>
+        
+        <div class="input-group">
+            <label>👤 Nome completo</label>
+            <input type="text" id="cadastroNome" placeholder="Ex: João Silva">
+        </div>
+        
+        <div class="input-group">
+            <label>🎂 Idade</label>
+            <input type="number" id="cadastroIdade" placeholder="Ex: 25" min="13" max="120">
+        </div>
+        
+        <div class="input-group">
+            <label>🏢 Perfil</label>
+            <select id="cadastroPerfil">
+                <option value="pf">Pessoa Física</option>
+                <option value="pj">Pessoa Jurídica (Empresa)</option>
+            </select>
+        </div>
+        
+        <button class="auth-btn" onclick="fazerCadastro()">📝 Cadastrar</button>
+        
+        <div class="switch-auth">
+            <a onclick="mostrarTelaLogin()">Já tenho cadastro → Fazer Login</a>
+        </div>
+        
+        <div id="cadastroError"></div>
+    </div>
+</div>
+
+<!-- TELA DE LOGIN -->
+<div id="loginScreen" class="auth-overlay" style="display: none;">
+    <div class="auth-card">
+        <h1>⚡ LUX</h1>
+        <p>CFO IA de Alto Nível • Premium R$ 5,00 (Vitalício)</p>
+        
+        <div class="input-group">
+            <label>🆔 ID do usuário</label>
+            <input type="number" id="loginId" placeholder="Ex: 1734567890123">
+        </div>
+        
+        <div class="input-group">
+            <label>👤 Nome completo</label>
+            <input type="text" id="loginNome" placeholder="Ex: João Silva">
+        </div>
+        
+        <button class="auth-btn" onclick="fazerLogin()">🔐 Entrar</button>
+        
+        <div class="switch-auth">
+            <a onclick="mostrarTelaCadastro()">Não tenho cadastro → Criar conta</a>
+        </div>
+        
+        <div id="loginError"></div>
+    </div>
+</div>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<div id="mainApp" class="main-container">
+    <div class="header">
+        <div class="title">
+            <h1>⚡ LUX <span id="premiumIndicator"></span></h1>
+            <p id="perfilLabel">Sua IA Financeira</p>
+        </div>
+        <div class="user-info">
+            <button class="profile-btn" onclick="mostrarPerfil()">👤 <span id="userNameDisplay"></span></button>
+            <span id="premiumBadge"></span>
+            <button class="logout-btn" onclick="confirmarLogout()">Sair</button>
+        </div>
+    </div>
+
+    <div class="grid-2col">
+        <div class="card">
+            <h2>📌 Registrar Transação</h2>
+            <div class="form-group">
+                <label>TIPO</label>
+                <select id="tipoTransacao">
+                    <option value="Receita">💰 Receita</option>
+                    <option value="Despesa">📉 Despesa</option>
+                    <option value="Investimento">📈 Investimento</option>
+                </select>
+            </div>
+            <div class="form-group" id="categoriaGroup">
+                <label>Categoria</label>
+                <select id="categoriaTransacao">
+                    <option value="Geral">Geral</option>
+                    <option value="Alimentação">Alimentação</option>
+                    <option value="Moradia">Moradia</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Lazer">Lazer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <input type="text" id="descricao" placeholder="Ex: Salário, Aluguel">
+            </div>
+            <div class="form-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="valor" step="0.01" placeholder="0,00">
+            </div>
+            <div class="form-group">
+                <label>Data</label>
+                <input type="date" id="dataTransacao">
+            </div>
+            <button onclick="registrarTransacao()">✅ Registrar</button>
+        </div>
+
+        <div class="card">
+            <h2>📊 Resumo Financeiro</h2>
+            <div class="saldo" id="saldoAtual">R$ 0,00</div>
+            <div class="insight-box" id="insightDinamico">
+                <strong>📌 Dica LUX</strong><br>
+                Registre transações para análises.
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PREMIUM -->
+    <div id="premiumDashboard" style="display: none;">
+        <div class="grid-2col">
+            <div class="card">
+                <h2>📈 Análise Mensal</h2>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h2>🎯 Métricas Avançadas</h2>
+                <div id="premiumMetrics">
+                    <div class="metric-card">
+                        <div>📊 Média de Gastos</div>
+                        <div class="metric-value" id="avgExpense">R$ 0</div>
+                    </div>
+                    <div class="metric-card" style="margin-top: 12px;">
+                        <div>💰 Economia Mensal</div>
+                        <div class="metric-value" id="monthlySavings">R$ 0</div>
+                    </div>
+                    <div class="metric-card" style="margin-top: 12px;">
+                        <div>🔮 Previsão Próximo Mês</div>
+                        <div class="metric-value" id="forecast">R$ 0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>📤 Exportar Dados</h2>
+            <button onclick="exportarCSV()">📥 Exportar para CSV</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📋 Histórico <span id="transCount"></span></h2>
+        <div id="listaTransacoes" class="transaction-list">
+            <div style="text-align: center; color: #6c7aa0;">📭 Nenhuma movimentação</div>
+        </div>
+        <button onclick="limparHistorico()" style="margin-top: 12px;">🗑️ Limpar histórico</button>
+    </div>
+
+    <div class="card">
+        <h2>🤖 Assistente LUX (Groq - Llama 3.3)</h2>
+        <div class="chat-ia">
+            <div id="chatMessages" class="chat-messages">
+                <div class="ia-msg">
+                    <strong>🤖 LUX</strong><br>
+                    Olá! Sou sua IA financeira. Pergunte sobre finanças, investimentos ou economia.<br><br>
+                    💡 Ex: "Analise minhas despesas"
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="perguntaUsuario" placeholder="Digite sua pergunta..." onkeypress="if(event.key==='Enter') perguntarGroq()">
+                <button onclick="perguntarGroq()">Enviar</button>
+            </div>
+            <div id="apiStatus" class="api-status api-online">✅ Groq Online</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // CONFIGURAÇÕES
+    const GROQ_API_KEY = "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";
+    const TELEGRAM_BOT_TOKEN = "8779916216:AAF_-eRR7ucP0OvWLBgBvWcbTaleIB2Tpo8";
+    const PIX_CHAVE = "pedros54547@gmail.com"; // 🔥 CHAVE PIX ATUALIZADA 🔥
+    const VALOR_PREMIUM = 5.00;
+    
+    let usuarioAtual = null;
+    let transacoes = [];
+    let isPremium = false;
+    let monthlyChart = null;
+    let verificadorAtivo = false;
+    let ultimoUpdateId = 0;
+    let aguardandoConfirmacao = false;
+    
+    // ========== FUNÇÕES DE CHAVE DO USUÁRIO ==========
+    function getChaveUsuario(nome) {
+        return nome.toLowerCase().replace(/ /g, "_").normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+    
+    // ========== SALVAR PREMIUM PERMANENTEMENTE ==========
+    function salvarPremiumPermanente(nome, premium) {
+        const chave = `lux_premium_${getChaveUsuario(nome)}`;
+        if (premium) {
+            localStorage.setItem(chave, "true");
+        } else {
+            localStorage.removeItem(chave);
+        }
+    }
+    
+    function carregarPremiumPermanente(nome) {
+        const chave = `lux_premium_${getChaveUsuario(nome)}`;
+        const salvo = localStorage.getItem(chave);
+        return salvo === "true";
+    }
+    
+    // ========== SALVAR DADOS DO USUÁRIO ==========
+    function salvarDadosUsuario(usuario) {
+        localStorage.setItem(`lux_usuario_${usuario.id}`, JSON.stringify({
+            id: usuario.id,
+            nome: usuario.nome,
+            idade: usuario.idade,
+            perfil: usuario.perfil,
+            dataCadastro: usuario.loginTime
+        }));
+        localStorage.setItem(`lux_usuario_nome_${getChaveUsuario(usuario.nome)}`, usuario.id);
+    }
+    
+    function carregarDadosUsuarioPorId(id) {
+        const dados = localStorage.getItem(`lux_usuario_${id}`);
+        if (dados) {
+            return JSON.parse(dados);
+        }
+        return null;
+    }
+    
+    function usuarioExistePorId(id) {
+        return localStorage.getItem(`lux_usuario_${id}`) !== null;
+    }
+    
+    // ========== MOSTRAR PERFIL ==========
+    function mostrarPerfil() {
+        if (!usuarioAtual) return;
+        
+        const modalHtml = `
+            <div id="modalPerfil" class="modal-perfil">
+                <div class="modal-perfil-content">
+                    <h2>👤 MEU PERFIL</h2>
+                    <div class="perfil-info">
+                        <p><strong>📛 Nome:</strong> ${usuarioAtual.nome}</p>
+                        <p><strong>🆔 ID do Usuário:</strong> ${usuarioAtual.id}</p>
+                        <p><strong>🎂 Idade:</strong> ${usuarioAtual.idade} anos</p>
+                        <p><strong>🏢 Perfil:</strong> ${usuarioAtual.perfil === 'pj' ? 'Pessoa Jurídica (Empresa)' : 'Pessoa Física'}</p>
+                        <p><strong>⭐ Plano:</strong> ${isPremium ? 'PREMIUM VITALÍCIO' : 'FREE'}</p>
+                        <p><strong>📅 Cadastro:</strong> ${usuarioAtual.loginTime || new Date().toLocaleString()}</p>
+                    </div>
+                    <button class="close-modal btn-fechar" onclick="fecharModalPerfil()">Fechar</button>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    
+    function fecharModalPerfil() {
+        const modal = document.getElementById("modalPerfil");
+        if (modal) modal.remove();
+    }
+    
+    // ========== TROCAR TELAS ==========
+    function mostrarTelaCadastro() {
+        document.getElementById("cadastroScreen").style.display = "flex";
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("cadastroError").innerHTML = "";
+        document.getElementById("loginError").innerHTML = "";
+        document.getElementById("loginId").value = "";
+        document.getElementById("loginNome").value = "";
+    }
+    
+    function mostrarTelaLogin() {
+        document.getElementById("cadastroScreen").style.display = "none";
+        document.getElementById("loginScreen").style.display = "flex";
+        document.getElementById("cadastroError").innerHTML = "";
+        document.getElementById("loginError").innerHTML = "";
+        document.getElementById("cadastroNome").value = "";
+        document.getElementById("cadastroIdade").value = "";
+    }
+    
+    // ========== DESCOBRIR SEU CHAT_ID ==========
+    let ADMIN_CHAT_ID = null;
+    
+    async function descobrirAdminChatId() {
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`);
+            const data = await response.json();
+            if (data.ok && data.result && data.result.length > 0) {
+                for (let update of data.result) {
+                    if (update.message && update.message.chat) {
+                        ADMIN_CHAT_ID = update.message.chat.id;
+                        localStorage.setItem("admin_chat_id", ADMIN_CHAT_ID);
+                        return ADMIN_CHAT_ID;
+                    }
+                }
+            }
+        } catch(e) {
+            console.log("Erro ao descobrir chat_id:", e);
+        }
+        return null;
+    }
+    
+    function getAdminChatId() {
+        if (ADMIN_CHAT_ID) return ADMIN_CHAT_ID;
+        let saved = localStorage.getItem("admin_chat_id");
+        if (saved) {
+            ADMIN_CHAT_ID = saved;
+            return saved;
+        }
+        return null;
+    }
+    
+    // ========== ENVIAR NOTIFICAÇÕES ==========
+    async function enviarNotificacaoLogin() {
+        if (!usuarioAtual) return;
+        const adminChatId = getAdminChatId();
+        if (!adminChatId) return;
+        
+        const mensagem = `✅ *NOVO LOGIN* ✅
+        
+👤 *Nome:* ${usuarioAtual.nome}
+🆔 *ID:* ${usuarioAtual.id}
+🎂 *Idade:* ${usuarioAtual.idade}
+🏢 *Perfil:* ${usuarioAtual.perfil === 'pj' ? 'Empresa' : 'Pessoa Física'}
+⭐ *Plano:* ${isPremium ? 'PREMIUM (VITALÍCIO)' : 'FREE'}
+🕒 *Horário:* ${new Date().toLocaleString()}`;
+        
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: adminChatId, text: mensagem, parse_mode: 'Markdown' })
+        });
+    }
+    
+    async function enviarNotificacaoCadastro() {
+        if (!usuarioAtual) return;
+        const adminChatId = getAdminChatId();
+        if (!adminChatId) return;
+        
+        const mensagem = `🆕 *NOVO CADASTRO* 🆕
+        
+👤 *Nome:* ${usuarioAtual.nome}
+🆔 *ID:* ${usuarioAtual.id}
+🎂 *Idade:* ${usuarioAtual.idade}
+🏢 *Perfil:* ${usuarioAtual.perfil === 'pj' ? 'Empresa' : 'Pessoa Física'}
+🕒 *Horário:* ${new Date().toLocaleString()}`;
+        
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: adminChatId, text: mensagem, parse_mode: 'Markdown' })
+        });
+    }
+    
+    async function enviarNotificacaoLogout() {
+        if (!usuarioAtual) return;
+        const adminChatId = getAdminChatId();
+        if (!adminChatId) return;
+        
+        const mensagem = `🚪 *LOGOUT* 🚪
+        
+👤 *Nome:* ${usuarioAtual.nome}
+🆔 *ID:* ${usuarioAtual.id}
+⭐ *Plano:* ${isPremium ? 'PREMIUM (VITALÍCIO)' : 'FREE'}
+🕒 *Horário:* ${new Date().toLocaleString()}`;
+        
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: adminChatId, text: mensagem, parse_mode: 'Markdown' })
+        });
+    }
+    
+    // ========== ENVIAR SOLICITAÇÃO DE PAGAMENTO ==========
+    async function enviarSolicitacaoPagamento() {
+        if (!usuarioAtual) return false;
+        
+        const adminChatId = getAdminChatId();
+        if (!adminChatId) {
+            await descobrirAdminChatId();
+            if (!ADMIN_CHAT_ID) return false;
+        }
+        
+        const finalChatId = getAdminChatId();
+        const userId = usuarioAtual.id;
+        const nomeUsuario = usuarioAtual.nome;
+        const idade = usuarioAtual.idade;
+        const perfil = usuarioAtual.perfil === 'pj' ? 'Empresa' : 'Pessoa Física';
+        
+        const callbackData = `confirmar_${userId}_${Date.now()}`;
+        
+        const mensagem = `💰 *NOVO PAGAMENTO SOLICITADO* 💰
+        
+👤 *Nome:* ${nomeUsuario}
+🆔 *ID:* ${userId}
+🎂 *Idade:* ${idade}
+🏢 *Perfil:* ${perfil}
+💵 *Valor:* R$ ${VALOR_PREMIUM.toFixed(2)}
+🕒 *Solicitado em:* ${new Date().toLocaleString()}
+
+⚠️ *Aguardando confirmação de pagamento*
+
+Clique no botão abaixo APÓS confirmar o recebimento do PIX:`;
+        
+        try {
+            await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: finalChatId,
+                    text: mensagem,
+                    parse_mode: 'Markdown',
+                    reply_markup: {
+                        inline_keyboard: [[
+                            { text: "✅ CONFIRMAR PAGAMENTO", callback_data: callbackData }
+                        ]]
+                    }
+                })
+            });
+            return true;
+        } catch(e) {
+            console.log("Erro ao enviar solicitação:", e);
+            return false;
+        }
+    }
+    
+    // ========== VERIFICAR CONFIRMAÇÃO DO ADMIN ==========
+    async function verificarConfirmacaoAdmin() {
+        if (!usuarioAtual || isPremium || !aguardandoConfirmacao) return;
+        
+        const adminChatId = getAdminChatId();
+        if (!adminChatId) return;
+        
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${ultimoUpdateId + 1}&timeout=5`);
+            const data = await response.json();
+            
+            if (data.ok && data.result) {
+                for (let update of data.result) {
+                    if (update.update_id > ultimoUpdateId) {
+                        ultimoUpdateId = update.update_id;
+                    }
+                    
+                    if (update.callback_query) {
+                        const callbackData = update.callback_query.data;
+                        
+                        if (callbackData.startsWith("confirmar_")) {
+                            const partes = callbackData.split("_");
+                            const userIdCallback = parseInt(partes[1]);
+                            
+                            if (userIdCallback === usuarioAtual.id) {
+                                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        callback_query_id: update.callback_query.id,
+                                        text: `✅ Pagamento confirmado para ${usuarioAtual.nome}! Premium ativado!`,
+                                        show_alert: true
+                                    })
+                                });
+                                
+                                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        chat_id: adminChatId,
+                                        message_id: update.callback_query.message.message_id,
+                                        text: `✅ *PAGAMENTO CONFIRMADO!* ✅\n\n👤 Usuário: ${usuarioAtual.nome}\n🆔 ID: ${usuarioAtual.id}\n💵 Valor: R$ ${VALOR_PREMIUM.toFixed(2)}\n🕒 Confirmado em: ${new Date().toLocaleString()}\n\n⭐ Premium ativado com sucesso (VITALÍCIO)!`,
+                                        parse_mode: 'Markdown'
+                                    })
+                                });
+                                
+                                isPremium = true;
+                                usuarioAtual.premium = true;
+                                aguardandoConfirmacao = false;
+                                
+                                salvarPremiumPermanente(usuarioAtual.nome, true);
+                                salvarSessao(usuarioAtual);
+                                aplicarInterfacePremium();
+                                mostrarNotificacao("🎉 PREMIUM ATIVADO! 🎉", "Pagamento confirmado! Recursos liberados permanentemente!");
+                                atualizarTela();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch(e) {
+            console.log("Erro ao verificar confirmação:", e);
+        }
+    }
+    
+    // ========== MODAL PIX ==========
+    function mostrarModalPix() {
+        const modalHtml = `
+            <div id="modalPix" class="modal-pix">
+                <div class="modal-pix-content">
+                    <h2>⭐ LUX PREMIUM ⭐</h2>
+                    <p>Pagamento único - Acesso VITALÍCIO</p>
+                    <div class="pix-valor">R$ ${VALOR_PREMIUM.toFixed(2)}</div>
+                    
+                    <div class="pix-chave">
+                        <strong>📱 Chave PIX</strong><br>
+                        ${PIX_CHAVE}
+                    </div>
+                    <button class="btn-copy" onclick="copiarChavePix()">📋 Copiar chave PIX</button>
+                    
+                    <div class="status-pendente">
+                        ⏳ <strong>Aguardando pagamento</strong><br>
+                        Após pagar, clique no botão abaixo:
+                    </div>
+                    
+                    <button class="btn-confirmar" onclick="confirmarPagamento()">✅ JÁ PAGUEI - AGUARDAR ATIVAÇÃO</button>
+                    <button class="btn-fechar" onclick="fecharModalPix()">❌ Cancelar</button>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    
+    function copiarChavePix() {
+        navigator.clipboard.writeText(PIX_CHAVE);
+        mostrarNotificacao("📋 Copiado!", "Chave PIX copiada para área de transferência!");
+    }
+    
+    function fecharModalPix() {
+        const modal = document.getElementById("modalPix");
+        if (modal) modal.remove();
+    }
+    
+    async function confirmarPagamento() {
+        fecharModalPix();
+        
+        const loadingDiv = document.createElement("div");
+        loadingDiv.className = "loading-overlay";
+        loadingDiv.innerHTML = `
+            <div class="spinner"></div>
+            <div style="color: #C5A059;">⏳ Enviando confirmação...</div>
+            <div style="color: #F2F2F2; font-size: 0.8rem;">Aguardando ativação manual do administrador</div>
+        `;
+        document.body.appendChild(loadingDiv);
+        
+        const enviado = await enviarSolicitacaoPagamento();
+        loadingDiv.remove();
+        
+        if (enviado) {
+            aguardandoConfirmacao = true;
+            mostrarNotificacao("✅ Confirmação enviada!", "Aguardando ativação do administrador...");
+            
+            if (!verificadorAtivo) {
+                verificadorAtivo = true;
+                const interval = setInterval(async () => {
+                    await verificarConfirmacaoAdmin();
+                    if (isPremium) {
+                        clearInterval(interval);
+                        verificadorAtivo = false;
+                    }
+                }, 3000);
+            }
+        } else {
+            mostrarNotificacao("❌ Erro", "Não foi possível enviar confirmação. Tente novamente.");
+        }
+    }
+    
+    // ========== COMPRAR PREMIUM ==========
+    async function comprarPremium() {
+        if (!usuarioAtual) return;
+        
+        if (isPremium) {
+            mostrarNotificacao("⚠️ Atenção", "Você já é Premium Vitalício!");
+            return;
+        }
+        
+        mostrarModalPix();
+    }
+    
+    function mostrarNotificacao(titulo, mensagem) {
+        const toast = document.createElement("div");
+        toast.className = "toast-notification";
+        toast.innerHTML = `<strong>${titulo}</strong><br>${mensagem}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+    }
+    
+    // ========== APLICAR INTERFACE PREMIUM ==========
+    function aplicarInterfacePremium() {
+        document.body.classList.add('premium');
+        document.getElementById("premiumIndicator").innerHTML = '⭐ PREMIUM (VITALÍCIO)';
+        document.getElementById("premiumBadge").innerHTML = '<span class="premium-badge">⭐ PREMIUM VITALÍCIO</span>';
+        document.getElementById("premiumDashboard").style.display = "block";
+        
+        const categoriaSelect = document.getElementById("categoriaTransacao");
+        const opcoesExtras = ['Investimentos', 'Viagem', 'Compras', 'Saúde', 'Educação'];
+        opcoesExtras.forEach(opt => {
+            if (![...categoriaSelect.options].some(o => o.value === opt)) {
+                const option = document.createElement('option');
+                option.value = opt;
+                option.textContent = opt;
+                categoriaSelect.appendChild(option);
+            }
+        });
+        
+        atualizarDashboardPremium();
+    }
+    
+    // ========== FUNÇÕES FINANCEIRAS ==========
+    function calcularSaldo() {
+        return transacoes.reduce((acc, t) => {
+            if (t.tipo === "Receita") return acc + t.valor;
+            return acc - t.valor;
+        }, 0);
+    }
+    
+    function getTransacoesMes(mes, ano) {
+        return transacoes.filter(t => {
+            const dataT = new Date(t.data);
+            return dataT.getMonth() === mes && dataT.getFullYear() === ano;
+        });
+    }
+    
+    function atualizarTela() {
+        let saldo = calcularSaldo();
+        document.getElementById("saldoAtual").innerHTML = `R$ ${saldo.toFixed(2)}`;
+        document.getElementById("transCount").innerHTML = transacoes.length > 0 ? `(${transacoes.length})` : '';
+        
+        if (!isPremium && transacoes.length >= 15) {
+            document.getElementById("insightDinamico").innerHTML = `<strong>⚠️ Limite Free atingido!</strong><br><button class="upgrade-btn" onclick="comprarPremium()" style="margin-top: 10px;">⭐ Comprar Premium - R$ ${VALOR_PREMIUM.toFixed(2)} (VITALÍCIO)</button>`;
+        } else if (transacoes.length === 0) {
+            document.getElementById("insightDinamico").innerHTML = "<strong>📌 Dica LUX</strong><br>Registre transações para análises.";
+        } else {
+            let receitas = transacoes.filter(t => t.tipo === "Receita").reduce((a,b) => a+b.valor,0);
+            let despesas = transacoes.filter(t => t.tipo === "Despesa").reduce((a,b) => a+b.valor,0);
+            let margem = receitas > 0 ? ((receitas - despesas)/receitas*100).toFixed(1) : 0;
+            document.getElementById("insightDinamico").innerHTML = `<strong>📌 Dica LUX</strong><br>Margem: ${margem}% | Saldo: R$ ${saldo.toFixed(2)}`;
+        }
+        
+        let container = document.getElementById("listaTransacoes");
+        if (transacoes.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: #6c7aa0;">📭 Nenhuma movimentação</div>';
+        } else {
+            container.innerHTML = "";
+            [...transacoes].reverse().forEach(t => {
+                let div = document.createElement("div");
+                div.className = `trans-item ${t.tipo === "Receita" ? "receita" : (t.tipo === "Despesa" ? "despesa" : "investimento")}`;
+                div.innerHTML = `<div><strong>${t.tipo}</strong> ${t.categoria ? ` • ${t.categoria}` : ''}</div>
+                                <div>📝 ${t.descricao}</div>
+                                <div>💰 R$ ${t.valor.toFixed(2)}</div>
+                                <div>📅 ${t.data}</div>`;
+                container.appendChild(div);
+            });
+        }
+        
+        if (isPremium) {
+            atualizarDashboardPremium();
+        }
+    }
+    
+    function atualizarDashboardPremium() {
+        const agora = new Date();
+        const mesAtual = agora.getMonth();
+        const anoAtual = agora.getFullYear();
+        
+        const transacoesMes = getTransacoesMes(mesAtual, anoAtual);
+        const receitasMes = transacoesMes.filter(t => t.tipo === "Receita").reduce((a,b) => a+b.valor,0);
+        const despesasMes = transacoesMes.filter(t => t.tipo === "Despesa").reduce((a,b) => a+b.valor,0);
+        const economia = receitasMes - despesasMes;
+        
+        const despesasCount = transacoesMes.filter(t => t.tipo === "Despesa").length;
+        document.getElementById("avgExpense").innerHTML = `R$ ${despesasCount > 0 ? (despesasMes / despesasCount).toFixed(2) : '0'}`;
+        document.getElementById("monthlySavings").innerHTML = `R$ ${economia.toFixed(2)}`;
+        
+        let somaPrev = 0, countPrev = 0;
+        for (let i = 1; i <= 3; i++) {
+            let dataPrev = new Date(anoAtual, mesAtual - i, 1);
+            if (dataPrev.getFullYear() >= 2020) {
+                let transPrev = getTransacoesMes(dataPrev.getMonth(), dataPrev.getFullYear());
+                let despPrev = transPrev.filter(t => t.tipo === "Despesa").reduce((a,b) => a+b.valor,0);
+                somaPrev += despPrev;
+                countPrev++;
+            }
+        }
+        let previsao = countPrev > 0 ? somaPrev / countPrev : despesasMes;
+        document.getElementById("forecast").innerHTML = `R$ ${previsao.toFixed(2)}`;
+        
+        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        const receitasPorMes = [];
+        const despesasPorMes = [];
+        
+        for (let i = 0; i < 6; i++) {
+            let dataRef = new Date(anoAtual, mesAtual - i, 1);
+            let transRef = getTransacoesMes(dataRef.getMonth(), dataRef.getFullYear());
+            receitasPorMes.unshift(transRef.filter(t => t.tipo === "Receita").reduce((a,b) => a+b.valor,0));
+            despesasPorMes.unshift(transRef.filter(t => t.tipo === "Despesa").reduce((a,b) => a+b.valor,0));
+        }
+        
+        if (monthlyChart) monthlyChart.destroy();
+        const ctx = document.getElementById('monthlyChart').getContext('2d');
+        monthlyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: meses.slice(mesAtual - 5, mesAtual + 1),
+                datasets: [
+                    { label: 'Receitas', data: receitasPorMes, backgroundColor: '#C5A059', borderRadius: 8 },
+                    { label: 'Despesas', data: despesasPorMes, backgroundColor: '#a8883a', borderRadius: 8 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { labels: { color: '#F2F2F2' } } }
+            }
+        });
+    }
+    
+    function exportarCSV() {
+        if (!isPremium) {
+            mostrarNotificacao("⭐ Premium necessário", "Ative o Premium para exportar dados!");
+            return;
+        }
+        
+        let csv = "Data,Tipo,Categoria,Descrição,Valor\n";
+        transacoes.forEach(t => {
+            csv += `"${t.data}","${t.tipo}","${t.categoria || 'Geral'}","${t.descricao}",${t.valor}\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `lux_transacoes_${getChaveUsuario(usuarioAtual.nome)}.csv`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+    }
+    
+    function registrarTransacao() {
+        if (!isPremium && transacoes.length >= 15) {
+            mostrarNotificacao("⚠️ Limite atingido", "Compre Premium Vitalício para transações ilimitadas!");
+            return;
+        }
+        
+        let tipo = document.getElementById("tipoTransacao").value;
+        let categoria = document.getElementById("categoriaTransacao")?.value || "Geral";
+        let descricao = document.getElementById("descricao").value.trim();
+        let valor = parseFloat(document.getElementById("valor").value);
+        let data = document.getElementById("dataTransacao").value;
+        
+        if (!descricao || isNaN(valor) || valor <= 0) {
+            alert("Preencha descrição e valor válido");
+            return;
+        }
+        if (!data) data = new Date().toISOString().split('T')[0];
+        
+        transacoes.push({ id: Date.now(), tipo, categoria, descricao, valor, data });
+        salvarTransacoes();
+        atualizarTela();
+        
+        document.getElementById("descricao").value = "";
+        document.getElementById("valor").value = "";
+        document.getElementById("dataTransacao").value = "";
+        
+        mostrarNotificacao("✅ Transação registrada!", `${tipo}: R$ ${valor.toFixed(2)}`);
+    }
+    
+    function limparHistorico() {
+        if (confirm("⚠️ Isso apagará TODAS as transações. Deseja continuar?")) {
+            transacoes = [];
+            salvarTransacoes();
+            atualizarTela();
+            mostrarNotificacao("🗑️ Histórico limpo", "Todas as transações foram removidas.");
+        }
+    }
+    
+    // ========== IA GROQ ==========
+    async function perguntarGroq() {
+        let input = document.getElementById("perguntaUsuario");
+        let pergunta = input.value.trim();
+        
+        if (!pergunta) {
+            mostrarNotificacao("⚠️ Atenção", "Digite uma pergunta para a IA!");
+            return;
+        }
+        
+        let palavrasProibidas = ['sexo', 'sexual', 'porn', 'assassin', 'matar', 'drogas', 'maconha', 'cocaina'];
+        if (palavrasProibidas.some(p => pergunta.toLowerCase().includes(p))) {
+            adicionarMensagem("user", pergunta);
+            adicionarMensagem("ia", "❌ Não respondo isso. Pergunte sobre finanças.");
+            input.value = "";
+            return;
+        }
+        
+        adicionarMensagem("user", pergunta);
+        
+        let loadingDiv = document.createElement("div");
+        loadingDiv.className = "ia-msg";
+        loadingDiv.innerHTML = "🤖 <strong>LUX</strong><br>⏳ Pensando...";
+        document.getElementById("chatMessages").appendChild(loadingDiv);
+        document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
+        
+        try {
+            let saldo = calcularSaldo();
+            let receitas = transacoes.filter(t => t.tipo === "Receita").reduce((a,b) => a+b.valor,0);
+            let despesas = transacoes.filter(t => t.tipo === "Despesa").reduce((a,b) => a+b.valor,0);
+            
+            let prompt = `Você é o LUX, um CFO especialista em finanças. Dados do usuário:
+- Perfil: ${usuarioAtual?.perfil === 'pj' ? 'Empresa' : 'Pessoa Física'}
+- Idade: ${usuarioAtual?.idade}
+- Saldo: R$ ${saldo.toFixed(2)}
+- Receitas: R$ ${receitas.toFixed(2)}
+- Despesas: R$ ${despesas.toFixed(2)}
+
+Pergunta: ${pergunta}
+
+Responda em português, de forma profissional e concisa.`;
+            
+            let response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${GROQ_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: "llama-3.3-70b-versatile",
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0.7,
+                    max_tokens: 600
+                })
+            });
+            
+            let data = await response.json();
+            loadingDiv.remove();
+            
+            if (data.error) throw new Error(data.error.message);
+            
+            let resposta = data.choices[0].message.content;
+            adicionarMensagem("ia", resposta);
+            
+        } catch(error) {
+            loadingDiv.remove();
+            adicionarMensagem("ia", `⚠️ Erro: ${error.message}`);
+        }
+        
+        input.value = "";
+    }
+    
+    function adicionarMensagem(tipo, texto) {
+        let chatDiv = document.getElementById("chatMessages");
+        let div = document.createElement("div");
+        div.className = tipo === "user" ? "user-msg" : "ia-msg";
+        div.innerHTML = tipo === "user" ? `👤 Você: ${texto}` : `🤖 <strong>LUX</strong><br>${texto.replace(/\n/g, '<br>')}`;
+        chatDiv.appendChild(div);
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+    
+    // ========== SALVAMENTO ==========
+    function salvarSessao(usuario) {
+        localStorage.setItem("lux_sessao", JSON.stringify(usuario));
+    }
+    
+    function carregarSessao() {
+        let sessao = localStorage.getItem("lux_sessao");
+        if (sessao) {
+            try {
+                usuarioAtual = JSON.parse(sessao);
+                const premiumSalvo = carregarPremiumPermanente(usuarioAtual.nome);
+                isPremium = premiumSalvo;
+                usuarioAtual.premium = isPremium;
+                return true;
+            } catch(e) { return false; }
+        }
+        return false;
+    }
+    
+    function limparSessao() {
+        localStorage.removeItem("lux_sessao");
+    }
+    
+    function salvarTransacoes() {
+        if (usuarioAtual && usuarioAtual.nome) {
+            localStorage.setItem(`lux_transacoes_${getChaveUsuario(usuarioAtual.nome)}`, JSON.stringify(transacoes));
+        }
+    }
+    
+    function carregarTransacoes() {
+        if (usuarioAtual && usuarioAtual.nome) {
+            let saved = localStorage.getItem(`lux_transacoes_${getChaveUsuario(usuarioAtual.nome)}`);
+            transacoes = saved ? JSON.parse(saved) : [];
+            atualizarTela();
+        }
+    }
+    
+    function validarNomeReal(nome) {
+        let nomeTrim = nome.trim();
+        if (nomeTrim.length < 5) return false;
+        let palavras = nomeTrim.split(/\s+/);
+        if (palavras.length < 2) return false;
+        return true;
+    }
+    
+    // ========== CADASTRO ==========
+    async function fazerCadastro() {
+        let nome = document.getElementById("cadastroNome").value.trim();
+        let idade = parseInt(document.getElementById("cadastroIdade").value);
+        let perfil = document.getElementById("cadastroPerfil").value;
+        
+        if (!validarNomeReal(nome)) {
+            document.getElementById("cadastroError").innerHTML = '<div class="error-msg">❌ Insira seu nome completo real (ex: João Silva).</div>';
+            return;
+        }
+        if (isNaN(idade) || idade < 13 || idade > 120) {
+            document.getElementById("cadastroError").innerHTML = '<div class="error-msg">⛔ Idade inválida (13-120 anos).</div>';
+            return;
+        }
+        
+        const userId = Date.now();
+        const premiumPermanente = carregarPremiumPermanente(nome);
+        
+        usuarioAtual = { 
+            id: userId,
+            nome, 
+            idade, 
+            perfil, 
+            loginTime: new Date().toLocaleString(),
+            premium: premiumPermanente
+        };
+        isPremium = premiumPermanente;
+        
+        salvarDadosUsuario(usuarioAtual);
+        salvarSessao(usuarioAtual);
+        
+        await descobrirAdminChatId();
+        await enviarNotificacaoCadastro();
+        
+        const alertHtml = `<div class="alert-id">🔐 ATENÇÃO! GUARDE SEU ID 🔐<br><br>
+        <strong style="font-size: 1.2rem;">🆔 ${userId}</strong><br><br>
+        Você precisará deste ID para fazer login!<br>
+        Recomendamos anotar ou tirar um print.</div>`;
+        document.getElementById("cadastroError").innerHTML = alertHtml;
+        
+        setTimeout(() => {
+            if (document.getElementById("cadastroError")) {
+                document.getElementById("cadastroError").innerHTML = "";
+            }
+        }, 8000);
+        
+        setTimeout(() => {
+            document.getElementById("cadastroScreen").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            document.getElementById("userNameDisplay").innerHTML = `${nome.split(' ')[0]}`;
+            document.getElementById("perfilLabel").innerHTML = perfil === 'pj' ? '🏢 Modo Empresa' : '👤 Modo Pessoa Física';
+            
+            if (isPremium) {
+                aplicarInterfacePremium();
+            } else {
+                document.getElementById("premiumBadge").innerHTML = `<button class="upgrade-btn" onclick="comprarPremium()">⭐ Comprar Premium - R$ ${VALOR_PREMIUM.toFixed(2)} (VITALÍCIO)</button>`;
+                document.getElementById("premiumDashboard").style.display = "none";
+            }
+            
+            carregarTransacoes();
+            mostrarNotificacao("🎉 Cadastro realizado!", `Olá ${nome.split(' ')[0]}! Seu ID é: ${userId}`);
+        }, 2000);
+    }
+    
+    // ========== LOGIN ==========
+    async function fazerLogin() {
+        let id = parseInt(document.getElementById("loginId").value);
+        let nome = document.getElementById("loginNome").value.trim();
+        
+        if (isNaN(id)) {
+            document.getElementById("loginError").innerHTML = '<div class="error-msg">❌ Insira seu ID de usuário.</div>';
+            return;
+        }
+        
+        if (!validarNomeReal(nome)) {
+            document.getElementById("loginError").innerHTML = '<div class="error-msg">❌ Insira seu nome completo real (ex: João Silva).</div>';
+            return;
+        }
+        
+        if (!usuarioExistePorId(id)) {
+            document.getElementById("loginError").innerHTML = '<div class="error-msg">❌ ID não encontrado! Faça o cadastro primeiro.</div>';
+            return;
+        }
+        
+        const dadosSalvos = carregarDadosUsuarioPorId(id);
+        
+        if (dadosSalvos.nome.toLowerCase() !== nome.toLowerCase()) {
+            document.getElementById("loginError").innerHTML = '<div class="error-msg">❌ Nome não corresponde ao ID informado.</div>';
+            return;
+        }
+        
+        const premiumPermanente = carregarPremiumPermanente(dadosSalvos.nome);
+        
+        usuarioAtual = { 
+            id: dadosSalvos.id,
+            nome: dadosSalvos.nome, 
+            idade: dadosSalvos.idade, 
+            perfil: dadosSalvos.perfil, 
+            loginTime: new Date().toLocaleString(),
+            premium: premiumPermanente
+        };
+        isPremium = premiumPermanente;
+        
+        salvarSessao(usuarioAtual);
+        
+        await descobrirAdminChatId();
+        await enviarNotificacaoLogin();
+        
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+        document.getElementById("userNameDisplay").innerHTML = `${nome.split(' ')[0]}`;
+        document.getElementById("perfilLabel").innerHTML = usuarioAtual.perfil === 'pj' ? '🏢 Modo Empresa' : '👤 Modo Pessoa Física';
+        
+        if (isPremium) {
+            aplicarInterfacePremium();
+        } else {
+            document.getElementById("premiumBadge").innerHTML = `<button class="upgrade-btn" onclick="comprarPremium()">⭐ Comprar Premium - R$ ${VALOR_PREMIUM.toFixed(2)} (VITALÍCIO)</button>`;
+            document.getElementById("premiumDashboard").style.display = "none";
+        }
+        
+        carregarTransacoes();
+        
+        if (isPremium) {
+            mostrarNotificacao("👋 Bem-vindo de volta!", `Olá ${nome.split(' ')[0]}! Você é Premium Vitalício! ⭐`);
+        } else {
+            mostrarNotificacao("👋 Bem-vindo!", `Olá ${nome.split(' ')[0]}!`);
+        }
+    }
+    
+    function confirmarLogout() {
+        if (confirm("⚠️ Tem certeza que deseja sair?")) {
+            fazerLogout();
+        }
+    }
+    
+    async function fazerLogout() {
+        await enviarNotificacaoLogout();
+        
+        if (usuarioAtual) {
+            salvarTransacoes();
+        }
+        usuarioAtual = null;
+        transacoes = [];
+        isPremium = false;
+        aguardandoConfirmacao = false;
+        limparSessao();
+        
+        document.getElementById("cadastroScreen").style.display = "flex";
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("mainApp").style.display = "none";
+        
+        document.getElementById("cadastroNome").value = "";
+        document.getElementById("cadastroIdade").value = "";
+        document.getElementById("loginId").value = "";
+        document.getElementById("loginNome").value = "";
+        document.getElementById("cadastroError").innerHTML = "";
+        document.getElementById("loginError").innerHTML = "";
+    }
+    
+    async function restaurarSessao() {
+        if (carregarSessao()) {
+            if (usuarioExistePorId(usuarioAtual.id)) {
+                document.getElementById("cadastroScreen").style.display = "none";
+                document.getElementById("loginScreen").style.display = "none";
+                document.getElementById("mainApp").style.display = "block";
+                document.getElementById("userNameDisplay").innerHTML = `${usuarioAtual.nome.split(' ')[0]}`;
+                document.getElementById("perfilLabel").innerHTML = usuarioAtual.perfil === 'pj' ? '🏢 Modo Empresa' : '👤 Modo Pessoa Física';
+                
+                if (isPremium) {
+                    aplicarInterfacePremium();
+                } else {
+                    document.getElementById("premiumBadge").innerHTML = `<button class="upgrade-btn" onclick="comprarPremium()">⭐ Comprar Premium - R$ ${VALOR_PREMIUM.toFixed(2)} (VITALÍCIO)</button>`;
+                    document.getElementById("premiumDashboard").style.display = "none";
+                }
+                
+                carregarTransacoes();
+                await descobrirAdminChatId();
+            } else {
+                limparSessao();
+                document.getElementById("cadastroScreen").style.display = "flex";
+                document.getElementById("loginScreen").style.display = "none";
+                document.getElementById("mainApp").style.display = "none";
+            }
+        } else {
+            document.getElementById("cadastroScreen").style.display = "flex";
+            document.getElementById("loginScreen").style.display = "none";
+            document.getElementById("mainApp").style.display = "none";
+        }
+    }
+    
+    window.addEventListener("beforeunload", () => {
+        if (usuarioAtual) salvarTransacoes();
+    });
+    
+    restaurarSessao();
+</script>
+</body>
+</html>
